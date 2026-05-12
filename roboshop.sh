@@ -7,7 +7,7 @@ DOMAIN_NAME="dhruvadvith.online"
 
 for instance in $@
 do
-INSTANCE_ID=$(aws ec2 run-instances \
+INSTANCE_ID=$( aws ec2 run-instances \
     --image-id $AMI_ID \
     --instance-type t3.micro \
     --security-group-ids $SG_ID \
@@ -16,22 +16,22 @@ INSTANCE_ID=$(aws ec2 run-instances \
     --output text )
 
     if [ $instance == "frontend" ]; then
-    IP=$(
+        IP=$(
         aws ec2 describe-instances \
         --instance-ids $INSTANCE_ID \
-        --query "Reservations[].Instances[].PublicIpAddress" \
+        --query 'Reservations[].Instances[].PublicIpAddress' \
         --output text
-        
-       )
+          
+        )
        RECORD_NAME="$instance.$DOMAIN_NAME" # frontend.dhruvadvith.online
 else
-    IP=$(
+       IP=$(
         aws ec2 describe-instances \
         --instance-ids $INSTANCE_ID \   
         --query "Reservations[].Instances[].PrivateIpAddress" \
         --output text
-       )
-         RECORD_NAME="$instance.$DOMAIN_NAME" # mongodb.dhruvadvith.online
+        )
+        RECORD_NAME="$instance.$DOMAIN_NAME" # mongodb.dhruvadvith.online
 fi
 
 echo "IP Adress: $IP"
